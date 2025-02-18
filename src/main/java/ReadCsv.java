@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 class MyObject{
 
@@ -85,10 +86,21 @@ public class ReadCsv {
         // Read CSV and map to MyObject
         List<MyObject> objects = readCsvToObjects(filePath);
 
-
+        List<String> ninjasAbove = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        double kraftpunkte = scanner.nextDouble();
+        scanner.nextLine();
         for (MyObject obj : objects) {
+            if (obj.Kraftpunkte > kraftpunkte && !ninjasAbove.contains(obj.Charaktername)) {
+                ninjasAbove.add(obj.Charaktername);
+            }
             System.out.println(obj);
         }
+
+        for (String obj : ninjasAbove) {
+            System.out.println(obj);
+        }
+
     }
 
     /**
