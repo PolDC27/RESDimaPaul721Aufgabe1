@@ -87,6 +87,7 @@ public class ReadCsv {
         List<MyObject> objects = readCsvToObjects(filePath);
 
         List<String> ninjasAbove = new ArrayList<>();
+        List<MyObject> erreignisseJonin = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         double kraftpunkte = scanner.nextDouble();
         scanner.nextLine();
@@ -94,11 +95,27 @@ public class ReadCsv {
             if (obj.Kraftpunkte > kraftpunkte && !ninjasAbove.contains(obj.Charaktername)) {
                 ninjasAbove.add(obj.Charaktername);
             }
+            if (obj.Stufe.equals("Jonin")) {
+                erreignisseJonin.add(obj);
+            }
             System.out.println(obj);
         }
 
         for (String obj : ninjasAbove) {
             System.out.println(obj);
+        }
+
+        for (int i = 0; i < erreignisseJonin.size() - 1; i++) {
+            for (int j = i + 1; j < erreignisseJonin.size(); j++) {
+                if (erreignisseJonin.get(i).getDatum().isAfter(erreignisseJonin.get(j).getDatum())){
+                    MyObject temp = erreignisseJonin.get(i);
+                    erreignisseJonin.set(i, erreignisseJonin.get(j));
+                    erreignisseJonin.set(j, temp);
+                }
+            }
+        }
+        for (MyObject obj : erreignisseJonin) {
+            System.out.println(obj.getDatum() + " : " +obj.Charaktername + " - " + obj.Beschreibung);
         }
 
     }
