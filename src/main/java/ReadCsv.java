@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVRecord;
 
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -88,9 +89,13 @@ public class ReadCsv {
 
         List<String> ninjasAbove = new ArrayList<>();
         List<MyObject> erreignisseJonin = new ArrayList<>();
+        List<String> stuffen = new ArrayList<>();
+        List<Integer> anzahlEreignisse = new ArrayList<>();
+        List<Double> totalPunkte = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         double kraftpunkte = scanner.nextDouble();
         scanner.nextLine();
+
         for (MyObject obj : objects) {
             if (obj.Kraftpunkte > kraftpunkte && !ninjasAbove.contains(obj.Charaktername)) {
                 ninjasAbove.add(obj.Charaktername);
@@ -98,6 +103,22 @@ public class ReadCsv {
             if (obj.Stufe.equals("Jonin")) {
                 erreignisseJonin.add(obj);
             }
+
+            if (!stuffen.contains(obj.Stufe)) {
+                stuffen.add(obj.Stufe);
+                anzahlEreignisse.add(1);
+                totalPunkte.add(obj.Kraftpunkte);
+            }
+            else{
+                for (int i = 0; i < stuffen.size(); i++) {
+                    if (stuffen.get(i).equals(obj.Stufe)) {
+                        anzahlEreignisse.set(i, anzahlEreignisse.get(i)+1);
+                        totalPunkte.set(i, totalPunkte.get(i)+obj.Kraftpunkte);
+                    }
+                }
+            }
+
+
             System.out.println(obj);
         }
 
@@ -116,6 +137,32 @@ public class ReadCsv {
         }
         for (MyObject obj : erreignisseJonin) {
             System.out.println(obj.getDatum() + " : " +obj.Charaktername + " - " + obj.Beschreibung);
+        }
+
+        for (int i = 0; i < stuffen.size() - 1; i++) {
+            for (int j = i + 1; j < stuffen.size(); j++) {
+                if(anzahlEreignisse.get(i) < anzahlEreignisse.get(j)){
+                    String temp = stuffen.get(i);
+                    stuffen.set(i, stuffen.get(j));
+                    stuffen.set(j, temp);
+                    int temp1 = anzahlEreignisse.get(i);
+                    anzahlEreignisse.set(i, anzahlEreignisse.get(j));
+                    anzahlEreignisse.set(j, temp1);
+                }
+            }
+        }
+
+        String file = "gesamtzahl.txt";
+
+
+        try (FileWriter fileWriter = new FileWriter(file, true)) {
+            for (int i = 0; i < anzahlEreignisse.size(); i++) {
+                fileWriter.write(stuffen.get(i) + "%" + anzahlEreignisse.get(i) + "#" + totalPunkte.get(i) + System.lineSeparator());
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
         }
 
     }
